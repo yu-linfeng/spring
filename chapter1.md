@@ -42,7 +42,6 @@
 ```BeanFactory```接口衍生出了```ListableBeanFactory```和```HierarchicalBeanFactory```两个接口，其中```ListableBeanFactory```提供了返回容器中的Bean对象功能，```HierarchicalBeanFactory```提供了访问父容器的功能。
 
 <div style="font-family:楷体;background-color:#F5F6F7">在Spring IoC容器的接口设计中，充分体现了设计模式原则中的<strong>接口隔离原则</strong>，将接口的功能尽量的做到了最小粒度的隔离。</div>
-
 最后```ApplicationContext```接口同时继承了这两种Bean工厂。
 
 - **这里留下一个疑问，在上述三个FactoryBean中，为什么都只包含了读方法，而没有写方法？（例如HierarchicalBeanFactory有获取父容器的方法，但是没有设置父容器的方法。）**
@@ -62,3 +61,22 @@ Spring把所有的资源都抽象成了```Resource```接口，```ResourceLoader`
   在Spring Resource接口设计中，运用了设计模式中的<strong>策略模式</strong>，Resource接口抽象了资源访问的逻辑，衍生出了FileSystemResource等具体的策略，ResourceLoader返回一个Resource实例，而Spring中的ApplicationContext则充当了策略模式中的Context，也就是策略模式的决策者。</p>
   接下来将会把Resource策略模式从Spring中剥离出来，便于我们更加详尽的分析，
 </div>
+
+**ApplicationContext**
+
+```ApplicationContext```是```BeanFactory```的子接口，前面说到```BeanFactory```在Spring中作为IoC容器，提供了最基本的功能，而```ApplicationContext```同样可以作为Spring IoC容器，具备更加完善的功能。
+
+![applicationcontext](resources/applicationcontext.png)
+
+可以看到```ApplicationContext```继承了这么多接口，足以说明它具备了强大的能力，包括前面提到的```BeanFactory```的两个子接口和```ResourceLoader```的子接口，接下来看看其他接口都有什么能力。
+
+MessageSource：在Spring中要支持国际化，可以通过```MessageSource```实现。它的一个子接口```HierachicalMessageSource```采用了和```BeanFactory```的子接口```HierarchicalBeanFactory```一样的设计，提供了父子层级的MessageSource。
+
+ApplicationEventPublisher：事件发布，在IoC容器的初始化过程中会调用```initApplicationEventMulticaster()```方法初始化事件，接着会注册监听器。在Spring中实现```ApplicationEvent```接口，即可定义一个事件。具体事件是如何被Spring发布以及监听在后面会有详细的分析过程。
+
+EnvironmentCable：用于获取当前环境。
+
+本章我们暂且分析到这里，管中窥豹，对Spring的IoC容器有一个大致的了解。我相信仍然充满许多疑问，但不可否认的是，我们从Spring的类结构设计可以说是很值得学习的。
+
+
+
